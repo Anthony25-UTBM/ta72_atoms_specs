@@ -1,5 +1,63 @@
 \chapter{Mise en oeuvre}
 \label{mise_en_oeuvre}
 
-\paragraph{}
+\section{Analyse de l'existant}
 
+\paragraph{}
+Dans une optique d'amélioration de l'existant, un bilan sur l'application telle
+que rendue en LP74 a été effectué.
+
+
+\subsection{Application dans un unique thread}
+
+\paragraph{}
+Le dessin des atomes, la gestion de leurs déplacements mais ainsi que toute
+navigation dans l'interface sont effectués dans un unique thread.
+
+\paragraph{}
+Les atomes et molécules sont stockées dans une liste chainée, parcourue de
+manière continue et séquentielle par l'application pour mettre à jour leurs
+coordonnées. Il est alors nécessaire que le calcul des nouvelles coordonnées
+ainsi que le dessin de chaque sphère soient simples et rapides pour rester
+inférieur à la durée d'une frame, afin obtenir des mouvements fluides.
+
+\paragraph{}
+De cette manière, les atomes n'étaient pas indépendants : un objet
+Environnement coordonne l'ensemble, et force de lui-même les mises à jour des
+informations.  Il a également comme rôle de vérifier les collisions.
+
+
+\subsection{Consommation excessive de mémoire}
+
+\paragraph{}
+L'application souffre de problèmes de consommation mémoire, avec des fuites
+dues à JavaFX (le framework graphique utilisé) qui amènent des lenteurs.
+L'application se fige par moments, et il arrive également qu'elle se fasse
+tuer par l'OOM killer du système.
+
+
+\subsection{Mouvement strictement basés sur de l'aléatoire}
+
+\paragraph{}
+Les mouvements des atomes ne sont pas basés sur des attractions ou répulsions
+entre éléments. L'application impose un aspect ``brouillon'' dans les vecteurs
+vitesses des éléments, de façon à donner l'impression que l'environnement n'est
+pas uniforme. Tout repose sur un système aléatoire, avec gestion de collisions
+et inversions de vecteurs vitesses lorsqu'un élément s'approche de trop près
+des bords du bac.
+
+
+\subsection{Formations de molécules}
+
+\paragraph{}
+De façon à former des molécules, et contrairement à ce qui est indiqué dans la
+partie liée aux mouvements, une sorte d'attraction a été mise en place. Nous ne
+considérons pas que le système en place soit suffisamment exact pour qu'il ait
+une réelle influence sur les mouvements des atomes.
+
+\paragraph{}
+Néanmoins, si la vitesse d'un atome est suffisamment faible et qu'il rentre en
+collision avec un autre atome, ces deux atomes vont se lier. La liaison ne
+repose sur rien de scientifique, dans le sens où, par exemple, les couches de
+valences ne sont pas prises en compte. Aucune vérification n'est effectuée
+pour savoir si les atomes peuvent réellement se lier entre eux.
