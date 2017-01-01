@@ -1,0 +1,121 @@
+\documentclass[12pt]{report}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[francais]{babel}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{color}
+\usepackage{stmaryrd}
+\usepackage{fancyhdr}
+\usepackage{afterpage}
+\usepackage{fullpage}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{enumitem}
+\usepackage[hyphens]{url}
+\usepackage{hyperref}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{varwidth}
+
+
+% Enlève les contours des liens
+\hypersetup{
+    linkbordercolor={1 1 1},
+    citebordercolor={1 1 1},
+    urlbordercolor={1 1 1},
+    colorlinks=true,
+    linkcolor=black,
+    urlcolor=blue
+}
+
+% Custom colors
+\definecolor{green-custom}{HTML}{70ad47}
+\definecolor{blue-custom}{HTML}{5b9bd5}
+
+% Redéfinis les marges des tableaux
+\let\oldtabular=\tabular
+\def\tabular{\small\oldtabular}
+\renewcommand{\arraystretch}{1.5}
+
+
+\title{\textbf{TA72 : Simulation d'atomes}}
+\author{
+    Aymen DAHECH \\
+        \href{mailto:aymen.dahech@utbm.fr}{aymen.dahech@utbm.fr} \and
+    Anthony RUHIER \\
+        \href{mailto:anthony.ruhier@utbm.fr}{anthony.ruhier@utbm.fr}
+}
+\date{13 janvier 2017}
+
+\pagestyle{fancy}
+\setlength{\headheight}{12pt}
+\fancyhf{}
+\fancyhead[L]{Aymen DAHECH, Anthony RUHIER}
+\fancyhead[R]{Simulation d'atomes}
+\geometry{headsep=5ex}
+
+\graphicspath{{graphics/}}
+\usetikzlibrary{arrows,positioning}
+
+\setlength{\intextsep}{0pt}
+
+\begin{document}
+
+{
+\newgeometry{left=1cm,right=1cm,bottom=3cm,top=1cm}
+\begin{titlepage}
+
+\vbox to 70pt{\hfill\includegraphics[height=2cm]{logo-utbm.eps}}\
+\begin{center}
+
+\textsc{\LARGE Université de technologie Belfort-Montbéliard}\\[0.7cm]
+\textsc{\LARGE Département Informatique}\\[1.0cm]
+\textsc{\Large TA72 -- Projet Tutoré}\\[5cm]
+
+
+% Title
+{ \huge \bfseries Conception d'une simulation d'atomes}\\[0.5cm]
+{ \huge \bfseries Rapport général}\\[3cm]
+
+% Author and supervisor
+\begin{large}
+Aymen \textsc{Dahech} \\
+    \href{mailto:aymen.dahech@utbm.fr}{aymen.dahech@utbm.fr}\\[1em]
+Anthony \textsc{Ruhier} \\
+    \href{mailto:anthony.ruhier@utbm.fr}{anthony.ruhier@utbm.fr}\\[1em]
+
+\end{large}
+
+\vfill
+
+% Bottom of the page
+{\large 13 janvier 2017}
+
+\end{center}
+\end{titlepage}
+}
+
+% Hack to force a new page
+{\clearpage\mbox{}\thispagestyle{empty}\clearpage}
+\setcounter{page}{1}
+
+\thispagestyle{empty}
+\vspace{4em}
+\tableofcontents
+
+\afterpage{\cfoot{\thepage}}
+\newpage
+
+%%%% Includes des chapitres :
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\setcounter{page}{1}
+\input{chapters/introduction.tex}
+\input{chapters/chapter1.tex}
+\input{chapters/chapter2.tex}
+\input{chapters/conclusion}
+
+\end{document}
