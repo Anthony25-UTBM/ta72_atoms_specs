@@ -1,0 +1,84 @@
+
+\chapter{Développement}
+\label{developpement}
+
+\section{Module réaction : Les interactions moléculaires}
+
+\paragraph{}
+Les interactions moléculaire sont des forces de répulsion ou d'attraction entre les molécules et les atomes non-liées. L'interaction moléculaire est trés importante dans les domaines des capteurs, conception des médicaments, nanotechnologies, etc. L'interaction moléculaire est connu aussi comme interaction non covalente ou interaction inter-moléculaire. Les interactions moléculaires ne sont pas des liaisons. Les liaisons covalantes  maintients les atomes ensembles dans les molécules . Ces liaisons se rompent et / ou se forment pendant les réactions chimiques 
+
+
+\subsection{Les interactions de Van der waals}
+Les interactions moléculaires ont été découvertes par le scientifique néerlandais Vander Waaals. Il a remarqué que les molécules sont collantes.
+L'expression «interaction de van der Waals» a signifié des forces cohésives (attraction entre les deux), des forces adhésives (attraction entre différentes) et / ou répulsives entre les molécules.
+
+\begin{table}[h!]
+\centering
+ \begin{tabular}{||c | c||} 
+ \hline
+ Atom & Van der Waals Radius \\ [0.5ex] 
+ \hline\hline
+ H & 1.2 \\ 
+ \hline
+ C & 1.7 \\
+ \hline
+ N & 1.6 \\
+ \hline
+ O & 1.5 \\
+ \hline
+ \end{tabular}
+\end{table}
+\subsection{La formule de Lennard jones }
+La formule de Lennard jones est un modèle mathématique simple qui permet de s'approcher de l'interaction entre les atomes ou des molécules neutres. 
+L'expression est :
+ \begin{displaymath} \phi_{\rm LJ} (r) = 4\varepsilon \left[ \left(\frac{\sigma}{r}\right)^{12} - \left(\frac{\sigma}{r}\right)^{6} \right]\end{displaymath}
+Oû 
+\begin{itemize}
+    \item $\varepsilon$ est la profondeur du puit de potentiel
+    \item $\sigma$ est la distance finie à laquelle le potentiel entre particule est nulle
+    \item r la distance entre les partiqueme
+    \item $r_m$ la distance à la quelle le potentiel atteint son minimum 
+\end{itemize}
+
+A $r_m$, la fonction potentielle a la valeur de $-\varepsilon$
+Le potentiel atteint son minimum autour de $r_m = 2^{\frac{1}{6}} \sigma = 1.222 \sigma$ (les distances sont liées)
+
+Ces paramêtres peuvent etre adaptés pour reproduire  des données expérémentales ou des calculs quantique précis.
+En raison de sa simplicité de calcul, le potentiel de Lennard jones est largement utilisé dans les simulations informatique meme si des potentiels plus précis existent.
+L'application en mode réaction utilise cette formule dans le but de simuler le comportement inter-atomique.
+
+Ce modèle est fortement répulsif à une ditance plus courte que le $1.222 \sigma$.
+Le terme  $\sim \frac{1}{r^{12}}$, domine à courte distance, représente le modèle de répulsion entre les atoms lorsqu'ils sont trés proches. Son origine physique est liée au principe de Pauli :  quand les nuages électronique entourant les atomes commencent à ce chevaucher, l'énergie du système augmente brusquement. l'exposant 12 a été choisi exclusivement sur une base protique l'équation est facile à calculer. Sur des bases physiques, un comportement exponentiel serait plus approprié.
+
+Le terme   $\sim \frac{1}{r^{6}}$, domine à large distance, constitue le modèle attractive. C'est le terme qui donne cohésion au système. Une attraction  $\sim \frac{1}{r^{6}}$ est produite par les forces de dispersion de van der waals. Ce sont des interactions plutôt faibles. 
+Les paramêtres $\sigma$ et $\varepsilon$ sont choisis pour correspondre aux propriétés physiques du matériau.
+
+\underline{Forme simplifié de la formule :}
+
+
+ \begin{displaymath} 
+ \phi_{\rm LJ} (r) =  \left[ \left(\frac{A}{r}\right)^{12} - \left(\frac{B}{r}\right)^{6} \right]\end{displaymath}
+
+Oû : 
+\begin{itemize}
+    \item $ A = 4 \varepsilon \sigma ^{12}$
+    \item $ B = 4 \varepsilon \sigma ^{6}$
+\end{itemize}
+
+\subsection{L'algorithme de Verlet et les lois de Newton}
+
+L'intégration de Verlet est une méthode numérique utilisée pour intégrer les équations de Newotn, il est fréquemment utilisé pour calculer des trajectoires de particules dans des simualtions de dynamique moléculaire et de l'infographie.
+Cette intégration fournit une bonne stabilité numérique, ainsi que d'autres propriétés importantes dans les systèmes physiques telque la réversibilité temporelle sans cout de calcul supplémentaire.
+
+\begin{displaymath} {\bf r} (t+\Delta t) = 2{\bf r} (t) - {\bf r} (t-\Delta t) + {\bf a} (t) \Delta t^2 + O(\Delta t^4) \end{displaymath}
+
+Avec 
+
+\begin{displaymath} {\bf a} (t) = - (1/m) {\bf\nabla} V\left( {\bf r}(t) \right) \end{displaymath}
+
+Afin de vérifier le bon déroulement de la simulation, l'application doit calculer la somme de l'énergie cinétique K et  V qui doit égale à E  ($ E = K + V $)
+\subsection{Le module physique dans l'application}
+Chaque atome dans la simulation se déplace simplement en réponse aux forces exercées par les atomes proches et les murs de l'environnement, conformément aux lois du mouvement de Newton. L'algorithme ne connait ni les transformations de phase, ni l'irréversibilité mais ces phénomènes de haut niveau et d'autre émergent de la physique microscopique.
+
+La force entre les atomes est calculée à partir de la formule de Lennard jones.La simulation se rapproche des lois de newton en utilisant l'algorithme de Verlet avec l'étape de temps. L'utilisation d'un pas de temps trop important peut rendre la simulation inexacte et parfois meme instable.
+L'application utilise un system naturel d'unité, avec le diamètre atomique, la masse atomique, le profondeur de potentiel de Lennard Jones et la constante de Boltzmann.
