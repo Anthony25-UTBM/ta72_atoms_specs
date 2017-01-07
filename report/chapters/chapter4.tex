@@ -3,8 +3,8 @@
 \paragraph{}
 Les agents sont considérés comme l'un des paradigmes les plus importants qui peuvent améliorer les méthodes actuelles de conceptions. Le terme "Agent" a trouvé son chemin dans un certain nombre de technologie et a été largement utilisé, par exemple, dans l'intelligence artificielle, les bases de données, les systèmes d'explorations, etc. Un agent est essentiellement un composant logiciel spécial qui possède une autonomie. Un agent est un systèm solidaire qui travail dans un environnement. Les systèmes multi-agents peuvent modéliser des systèmes complexes. les agents dans ce système agisse les un sur les autres. Un agent est autonome et proactif qu'il n'agit pas simplement en réponse à son environnement mais est capable d'afficher un comportement orienté vers l'objectif en prenant l'initiative (autonomous behavior).
 
-\subsection{ Jade }
-\subsubsection{Jade architecture}
+\section{ Jade }
+\subsection{Jade architecture}
 \paragraph{}
 Jade est composée de conteneurs d'agents qui peuvent être distribués sur le réseau. Les agents vivent dans des conteneurs qui sont le processus java qui fournit le temps d'exécution de JADE et tous les services nécessaires pour héberger et exécuter des agents. Il y a un conteneur spécial, appelé conteneur principal, qui représente le point d'amorçage d'une plate-forme: c'est le premier conteneur à lancer et tous les autres conteneurs doit se joindre à un conteneur principal (main container) en s'inscrivant avec lui.
 \paragraph{}
@@ -17,9 +17,9 @@ JADE propose:
     \item Une boîte à outils graphique pour le suivi et la gestion de la plate-forme d'agents intelligents.
 
 \end{itemize}
-    
 
-\subsubsection{Le cycle de vie d'agent JADE}
+
+\subsection{Le cycle de vie d'agent JADE}
 \paragraph{}
 Le cycle de vie d'un agent JADE suit le cycle proposé par FIPA. Ces agents passent par différents états définis comme:
 \begin{itemize}
@@ -33,7 +33,7 @@ Le cycle de vie d'un agent JADE suit le cycle proposé par FIPA. Ces agents pass
 \end{itemize}
 
 \paragraph{}
-\subsection{Gui Agent}
+\section{Gui Agent}
 Dans notre application, l'interface graphique est un agent. Cet agent au moment d'initialisation il crée un conteneur d'agent "sink-container". Ce contenair servira comme bassin pour les controlleurs ( chaque module; atome, molécule et réaction; est un agent sont missions principales est d'assurer le bon déroulement de la simulation.
 
 
@@ -79,7 +79,7 @@ public class FactoryGui extends Application {
             Parent parent = f.load();
             c = f.getController();
             c.setParent(parent);
-            c.setContainer(container);//creating controllers container 
+            c.setContainer(container);//creating controllers container
             container.acceptNewAgent("controller", c);//adding main controller in the container
             c.AStart(stage, true);
             /.../
@@ -88,7 +88,7 @@ public class FactoryGui extends Application {
 }
 \end{lstlisting}
 
-\subsection{Controller agent}
+\section{Controller agent}
 \paragraph{}
 Le main controlleur a pour mission le bon fonctionnement de GUI, il initialise les autres controlleurs (chaque tab a son propre controlleur qui assure le fonctionnement de ce tab). Ces controlleurs créer les environnements ou se déroulera la réaction. Chaque environnement est un container qui recevra les différents atomes sous forme d'agent.
 
@@ -106,10 +106,10 @@ Le main controlleur a pour mission le bon fonctionnement de GUI, il initialise l
   \node (atom1)     [process, below of=AtomController]   {Atom ex: H};
   \node (Environment)      [activityRuns, below of=ReactionController]
                                                       {Create Environment};
-                                                      
+
   \node (atoms)     [activityRuns, yshift=-2cm, below of=Environment]   {Atoms as agents};
 
-                                                    
+
   \draw[->]     (start) -- (masterController);
   \draw[->]     (masterController) -- (AtomController);
   \draw[->]     (masterController) --(MolecularController);
@@ -121,7 +121,7 @@ Le main controlleur a pour mission le bon fonctionnement de GUI, il initialise l
                                    {Add atom to environment}  (Environment);
   \draw[->]     (Environment) -- node[text width=3cm]
                                    {contain agents}(atoms);
- 
+
   \end{tikzpicture}
 
 

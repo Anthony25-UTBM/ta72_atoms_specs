@@ -1,14 +1,12 @@
-\chapter{Mise en oeuvre}
+\chapter{Analyse de l'existant}
 \label{mise_en_oeuvre}
-
-\section{Analyse de l'existant}
 
 \paragraph{}
 Dans une optique d'amélioration de l'existant, un bilan sur l'application telle
 que rendue en LP74 a été effectué.
 
 
-\subsection{Application dans un unique thread}
+\section{Application dans un unique thread}
 
 \paragraph{}
 Le dessin des atomes, la gestion de leurs déplacements mais ainsi que toute
@@ -27,7 +25,7 @@ Environnement coordonne l'ensemble, et force de lui-même les mises à jour des
 informations.  Il a également comme rôle de vérifier les collisions.
 
 
-\subsection{Consommation excessive de mémoire}
+\section{Consommation excessive de mémoire}
 
 \paragraph{}
 L'application souffre de problèmes de consommation mémoire, avec des fuites
@@ -36,7 +34,7 @@ L'application se fige par moments, et il arrive également qu'elle se fasse
 tuer par l'OOM killer du système.
 
 
-\subsection{Mouvement strictement basés sur de l'aléatoire}
+\section{Mouvement strictement basés sur de l'aléatoire}
 
 \paragraph{}
 Les mouvements des atomes ne sont pas basés sur des attractions ou répulsions
@@ -47,7 +45,7 @@ et inversions de vecteurs vitesses lorsqu'un élément s'approche de trop près
 des bords du bac.
 
 
-\subsection{Formations de molécules}
+\section{Formations de molécules}
 
 \paragraph{}
 De façon à former des molécules, et contrairement à ce qui est indiqué dans la
