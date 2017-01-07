@@ -20,6 +20,30 @@
 \usepackage{graphicx}
 \usepackage{tikz}
 \usepackage{varwidth}
+\usepackage{listings}
+\usepackage{color}
+\usetikzlibrary{decorations.text}
+\usepackage{enumitem}% http://ctan.org/pkg/enumitem
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=Java,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
 
 
 % Enlève les contours des liens
@@ -117,6 +141,7 @@ Anthony \textsc{Ruhier} \\
 \input{chapters/chapter1.tex}
 \input{chapters/chapter2.tex}
 \input{chapters/chapter3.tex}
+\input{chapters/chapter4.tex}
 \input{chapters/conclusion}
 
 \end{document}
