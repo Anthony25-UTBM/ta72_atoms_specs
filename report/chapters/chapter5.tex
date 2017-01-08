@@ -133,3 +133,200 @@ $O(Nlog(N))$ en cas moyen et $O(N^2)$ en pire cas. Cela reste inférieur à la
 complexité de l'ArrayList en cas moyen, mais il faut atteindre un grand nombre
 d'atomes pour que la différence soit intéressante, c'est pourquoi la solution
 n'a pas été retenue.
+
+
+\section{Implémentation}
+
+\subsection{StampedLock}
+\paragraph{}
+Avec des atomes agents, il est nécessaire que l'octree soit threadsafe tout en
+étant performant pour plusieurs centaines voir milliers d'accès ou écritures
+simultanées. L'approche choisie a donc été d'utiliser un système de lock
+permettant de passer un cube en read-only ou de le bloquer complètement lors
+de l'ajout ou suppression d'éléments. Il est également important de profiter du
+système d'arbre, où les locks peuvent être localisés : il est possible de lock
+uniquement une branche de l'arbre et les cubes qui la composent sans avoir à
+lock tout l'octree.
+
+\paragraph{}
+Les StampedLock ont paru être la meilleure solution, car ils amènent un couple
+de lock read/write : le ReadLock est ré-entrant, même entre threads, par contre
+le WriteLock ne l'est pas. Cela permet des accès simultanés en lecture dans
+l'octree, tout en bloquant les demandes d'écriture le temps que l'accès soit
+terminé, mais aussi l'inverse en évitant les écritures simultanées, et en
+bloquant les demandes de lecture le temps que les modifications soient
+terminées. De plus, les StampedLock ont de meilleures performances que les
+ReadWriteReentrantLock.
+
+
+\begin{figure}[H]
+\begin{lstlisting}
+public ArrayList<T> getObjects() throws InterruptedException {
+    if(isLeaf())
+        return new ArrayList<T>(objects);
+
+    ArrayList<T> childrenObjects = new ArrayList<T>();
+    long stamp = 0;
+    try {
+        stamp = rwlock.readLockInterruptibly();
+    } catch (InterruptedException e) {
+        e.printStackTrace();
+        return childrenObjects;
+    }
+
+    try {
+        for (Octree<T> child : children) {
+            if (child.hasObjects())
+                childrenObjects.addAll(child.getObjects());
+        }
+    } finally {
+        rwlock.unlockRead(stamp);
+    }
+
+    return childrenObjects;
+}
+\end{lstlisting}
+\caption{Exemple d'utilisation de read lock}
+\label{octree_code_getobjects}
+\end{figure}
+
+\paragraph{}
+Ce bloc prend comme exemple le retour des objets d'un cube, qui le place en
+read-only le temps de rassembler tous les objets des enfants, évitant toute
+écriture.
+
+\paragraph{}
+Des tests unitaires permettent de tester la caractéristique thread-safe de
+l'octree, en créeant plusieurs threads qui effectuent des modifications
+simultanées dans l'arbre. L'intérêt est de simuler le comportement qu'auront
+les atomes avec l'arbre pendant l'exécution du programme.
+
+
+\subsection{Recherche du plus proche voisin}
+
+\paragraph{}
+Pour la recherche de voisins, deux méthodes ont été implémentées : recherche de
+tous les atomes dans une certaine zone (que l'on appellera recherche via
+sphère), ou en recherchant dans tous les cubes entourant le cube dans lequel se
+trouve l'élément.
+
+\subsubsection{Recherche via une sphère}
+\paragraph{}
+La méthode de la sphère pour chercher le voisin le plus proche d'un élément
+consiste à choisir un second élément au hasard contenu dans le même cube. Ceci
+dû, elle fonctionne uniquement si le cube contient plus d'un élément, dans le
+cas contraire on basculera sur la méthode de recherche des cubes aux alentours.
+L'objectif est d'obtenir tous les éléments contenus dans la sphère dont le
+centre est notre élément, et ayant comme rayon la distance entre le premier
+et le second élément.
+
+\paragraph{}
+Si la sphère sort du cube actuel, un calcul est fait pour déterminer quels
+cubes voisins font partie de la sphère. Dans tous les voisins retournés, la
+distance pour chaque est calculée avec le centre de la sphère (l'élément pour
+lequel on souhaite trouver le plus proche voisin), et celui ou ceux pour qui la
+distance est la plus faible sont gardés et considérés comme plus proche
+voisins.
+
+\paragraph{}
+L'intérêt par rapport à la méthode suivante est que le nombre de voisins à
+évaluer est en théorie bien inférieur. Le nombre de distance à calculer est
+alors réduit.
+
+\subsubsection{Recherche via les cubes voisins}
+\paragraph{}
+La méthode via les cubes voisins consiste sur la détermination des cubes étant
+en contact avec le cube de l'élément visé. Pour se faire, l'algorithme va
+trouver chaque cube ayant une arrête partagée avec le cube actuel, ce qui donne
+au maximum 27 cubes voisins. Très peu de calculs sont nécessaires, ils sont
+trouvés très rapidement. L'accès aux cubes voisins est cependant plus long, ce
+qui donne la complexité donnée dans la partie détaillant le choix de l'octree.
+
+\paragraph{}
+Une fois les cubes voisins obtenus, pour chaque objet les constituants ainsi
+que ceux du cube actuel, la distance est évaluée avec l'élément ciblé, et le ou
+les objets ayant la distance la plus faible sont gardés et considérés comme
+plus proches voisins.
+
+\paragraph{}
+L'inconvénient de cette méthode par rapport à la recherche via une sphère est
+que d'avantage de distances sont à calculés, puisqu'aucun filtre n'est effectué
+en amont. Cela peut être un soucis si le nombre d'éléments maximum par cube est
+élevé.
+
+\subsubsection{Comparaison des performances}
+\paragraph{}
+De façon à s'assurer que les performances des algorithmes soient
+satisfaisantes, des tests unitaires ont été écrits pour comparer le temps de
+d'exécution d'algorithmes naïfs comparés aux différents algorithmes présentés.
+
+\paragraph{}
+\begin{figure}[H]
+\begin{lstlisting}
+@Test
+public void getFarthestNeighbours() throws Exception {
+    Environment environment = genEnvironment(1000, false);
+    ArrayList<Atom> atoms = environment.getAtoms().getObjects();
+    for(Atom a : atoms)
+        octree.add(a);
+
+    Atom atom = atoms.get(0);
+
+    double start_naive_algorithm_time = stopwatch.runtime(TimeUnit.MICROSECONDS);
+    ArrayList<Atom> farthestNeighsWithNaiveAlgorithm = new ArrayList<>();
+    farthestNeighsWithNaiveAlgorithm.add(atoms.get(1));
+    double farthestDistanceWithNaiveAlgorithm = atom.distance(atoms.get(1));
+    for(Atom a : atoms) {
+        double distanceAtomA = atom.distance(a);
+        if(a != atom && distanceAtomA < farthestDistanceWithNaiveAlgorithm) {
+            farthestDistanceWithNaiveAlgorithm = distanceAtomA;
+            farthestNeighsWithNaiveAlgorithm = new ArrayList<>();
+            farthestNeighsWithNaiveAlgorithm.add(a);
+        }
+        else if(distanceAtomA == farthestDistanceWithNaiveAlgorithm)
+            farthestNeighsWithNaiveAlgorithm.add(a);
+    }
+    double naive_algorithm_time = stopwatch.runtime(TimeUnit.MICROSECONDS) - start_naive_algorithm_time;
+
+    double start_algorithm_time = stopwatch.runtime(TimeUnit.MICROSECONDS);
+    ArrayList<OctreePoint> farthestNeigh = octreeDistanceHelper.getFarthestNeighbours(octree, atom);
+    double algorithm_time = stopwatch.runtime(TimeUnit.MICROSECONDS) - start_algorithm_time;
+\end{lstlisting}
+\end{figure}
+\begin{figure}[H]
+\begin{lstlisting}
+    assertTrue(naive_algorithm_time >= algorithm_time);
+    assertEquals(
+        farthestDistanceWithNaiveAlgorithm,
+        ((Atom) farthestNeigh.get(0)).distance(atom),
+        0.001
+    );
+}
+\end{lstlisting}
+\caption{Test unitaire sur la recherche du plus proche voisin via les cubes
+    environnants}
+\label{octree_getFarthestNeighbours}
+\end{figure}
+
+\paragraph{}
+Pour la recherche de voisins, l'algorithme naïf correspond à parcourir une
+liste d'atomes et de garder les éléments pour lesquels la distance calculée est
+la plus faible. Ici, le temps d'exécution est comparé avec la méthode de
+recherche via les cubes voisins. Ici, sur notre machine de test, l'algorithme
+naïf prend 2.8ms, quand l'algorithme par les cubes voisins prend 2ms pour un
+environnement de 1000 éléments.
+
+\paragraph{}
+Grâce à ces tests, il a été mis en évidence que la recherche du plus proche
+voisin est plus efficace via la méthode des cubes voisins que via la méthode de
+la sphère. Cette dernière était, au mieux, 2 fois plus lente que la méthode
+naïve, quand la première est au pire 1.5 fois plus lente, mais la plupart des
+cas sont plus rapides, et certains tests ont montré des résultats étant 10 fois
+plus efficaces.
+
+\paragraph{}
+Le résultat est étonnant car l'on s'attend à ce que le filtre effectué par la
+méthode via une sphère allait la rendre plus efficace car réduit grandement le
+nombre de distances à calculer. Finalement, le calcul est fait efficacement en
+java, et c'est pourquoi la méthode des cubes voisins a été retenue pour la
+recherche de voisin le plus proche.
