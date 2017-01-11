@@ -44,7 +44,35 @@
    \arcarrow{90}{269}{ Reaction }
 \end{tikzpicture}
 \section{ Module atome : présentation atomique }
+
+\paragraph{}
+Le module atome comporte la présentation atomique d'un atome selectionner. La présentation est défini dans un tableau danslequelle est indiqué le type de l'atome, son diametre, le nombre de masse (A) et le nombre atomique (Z).
+la présentation d'un atome sous forme d'une sphère. Dans des prochaines amélioration, nous pouvons imaginer avoir autour de l'atome une illustration pédagogique du charge électronique.
 \section{ Module molécule : formation des molécules}
+\paragraph{}
+Dans le module molécule, l'utilisateur peut dans un premier lieu entrer une formule chimique qui sera parser à l'aide des regex.
+Une "regular expression" décrit une ou plusieurs chaînes afin de les chercher dans un corps de texte. L'expression sert de modèle pour associer un motif de caractère à la chaîne recherchée.
+Une expression régulière consiste en des caractères ordinaires (par exemple, des lettres de a à z) et des caractères spéciaux, appelés métacaractères.
+
+
+\begin{lstlisting}
+
+ public ArrayList<Atom> parse(Environment environment, String formula, boolean isCHNO) {
+        Pattern pattern = Pattern.compile("([A-Z][a-z]?)(\\d*)");//subdivide formula into numbers and letters such as CH2 became C, H2 or NO2Cl N,O2,Cl (the presence of a number means the end of the element)
+        Matcher matcher = pattern.matcher(formula);
+        ArrayList<Atom> atoms = new ArrayList<>();
+
+        while (matcher.find()) {
+            String symbole = matcher.group(2);
+            Point3D a_coord;
+            if (!verifyCHNO(isCHNO, matcher.group(1))) {
+                continue;
+}
+/.../
+\end{lstlisting}
+\paragraph{}
+Et dans une second temps, l'utilisateur peut utiliser la fonction de drag n drop afin de pouvoir constituer une molécule, les atomes vont etre placer trop proche et dans un environnment réduit, afin que la formation du molécule soit effectuer d'une maniére rapide et efficace.
+
 \section{ Module réaction : Les interactions moléculaires}
 
 \paragraph{}
