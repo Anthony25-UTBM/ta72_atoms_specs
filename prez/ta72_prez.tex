@@ -1,0 +1,120 @@
+\documentclass{beamer}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{lmodern}
+\usepackage{color}
+\usepackage{fix-cm}
+\usepackage{textpos}
+\usepackage{eurosym}
+\usepackage{multirow}
+\usepackage{perpage}
+\usepackage{eso-pic}
+\usepackage{times}
+\usepackage{tikz}
+\usetikzlibrary{matrix}
+
+\colorlet{helpful}{lime!40}
+\colorlet{harmful}{red!30}
+\colorlet{internal}{yellow!20}
+\colorlet{external}{cyan!30}
+\colorlet{S}{helpful!50!internal}
+\colorlet{W}{harmful!50!internal}
+\colorlet{O}{helpful!50!external}
+\colorlet{T}{harmful!50!external}
+
+\newcommand{\texta}{Positif\par}
+\newcommand{\textb}{Négatif\par}
+\newcommand{\textcn}{Interne\par}
+\newcommand{\textdn}{Externe\par}
+
+\newcommand{\back}[1]{\fontsize{80}{70}\selectfont #1}
+%%%
+
+\graphicspath{{images/}}
+
+\newcommand{\placetextbox}[3]{% \placetextbox{<horizontal pos>}{<vertical pos>}{<stuff>}
+	\setbox0=\hbox{#3}% Put <stuff> in a box
+	\AddToShipoutPictureFG*{% Add <stuff> to current page foreground
+		\put(\LenToUnit{#1\paperwidth},\LenToUnit{#2\paperheight}){\vtop{{\null}\makebox[0pt][c]{#3}}}%
+	}%
+}%
+
+% Redéfinis les marges des tableaux
+\let\oldtabular=\tabular
+\def\tabular{\small\oldtabular}
+\renewcommand{\arraystretch}{1.5}
+
+\usetheme{Warsaw}
+\usecolortheme{orchid}
+\graphicspath{{graphics/}}
+
+% Permet de réinitialiser les footnote à chaque frame. Nécéssite 2 compilations.
+\MakePerPage{footnote}
+
+\setlength{\TPHorizModule}{0.01\textwidth}
+\setlength{\TPVertModule}{0.01\textheight}
+
+\setbeamertemplate{navigation symbols}{}
+
+\title[Simulation d'atomes]{Simulation d'atomes}
+
+\author[\textsc{Dahech} \and \textsc{Ruhier}]{
+    Aymen \textsc{Dahech}\\
+    \and
+	Anthony \textsc{Ruhier}
+}
+\institute[TA72 - UTBM]{
+    TA72 -- Projet Tuteuré\\Université de Technologie Belfort--Montbéliard}
+\date{Automne 2016}
+
+\begin{document}
+
+% Permet de masquer le comptage de slides
+\bgroup
+\makeatletter
+\setbeamertemplate{headline}{}
+\setbeamertemplate{footline}
+{
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.5\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+    \usebeamerfont{title in head/foot}\insertshorttitle
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.5\paperwidth,ht=2.25ex,dp=1ex,center]{date in head/foot}%
+    \usebeamerfont{date in head/foot}\insertshortdate{}
+%    \insertframenumber{} / \inserttotalframenumber\hspace*{2ex}
+  \end{beamercolorbox}}%
+}
+\makeatother
+
+\begin{frame}[noframenumbering]
+ 	\frametitle{}
+	\titlepage
+	\hfill\includegraphics[height=1cm]{logo-utbm.eps}\hspace*{-1em}
+\end{frame}
+\egroup
+
+\logo{\includegraphics[height=1cm]{logo-utbm.eps}\hspace*{2em}}
+
+
+% Ajout du compteur de slides
+\expandafter\def\expandafter\insertshorttitle\expandafter{%
+      \insertshorttitle\hfill%
+      \insertframenumber\,/\,\inserttotalframenumber}
+
+\begin{frame}
+	\begin{small}
+	\frametitle{Plan}
+	\tableofcontents
+	\end{small}
+\end{frame}
+
+
+%%%% Includes des sections :
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+\input{sections/introduction.tex}
+
+\end{document}
