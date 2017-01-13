@@ -1,0 +1,47 @@
+\section{Agent}
+
+\begin{frame}
+\frametitle{Agent}
+\usetikzlibrary{arrows.meta}
+\tikzset{%
+  >={Latex[width=2mm,length=2mm]},
+  % Specifications for style of nodes:
+            base/.style = {rectangle, rounded corners, draw=black,
+                           minimum width=4cm, minimum height=1cm,
+                           text centered, font=\sffamily},
+  activityStarts/.style = {base, fill=blue!30},
+       startstop/.style = {base, fill=red!30},
+    activityRuns/.style = {base, fill=green!30},
+         process/.style = {base, minimum width=2.5cm, fill=orange!15,
+                           font=\ttfamily},
+}
+\begin{tikzpicture}[node distance=1.5cm,
+    every node/.style={fill=white, font=\sffamily}, align=center]
+
+  \node (start)             [Application]              {Application agent starts};
+  \node (masterController)     [process, below of=start]          {Controller (MASTER)};
+  \node (AtomController)      [process,below of=masterController, right of=ReactionController , xshift=-6cm]   {Atom Controller};
+  \node (MolecularController)      [process,below of=masterController, left of=ReactionController, xshift=6 cm]   {Molecule Controller};
+  \node (ReactionController)      [process, below of=masterController]   {Reaction Controller};
+
+  \node (atom1)     [process, below of=AtomController]   {Atom ex: H};
+  \node (Environment)      [activityRuns, below of=ReactionController]
+                                                      {Create Environment};
+
+  \node (atoms)     [activityRuns, yshift=-2cm, below of=Environment]   {Atoms as agents};
+
+
+  \draw[->]     (start) -- (masterController);
+  \draw[->]     (masterController) -- (AtomController);
+  \draw[->]     (masterController) --(MolecularController);
+  \draw[->]     (masterController) --  (ReactionController);
+  \draw[->]     (ReactionController) --  (Environment);
+  \draw[->]     (MolecularController) |-  (Environment);
+  \draw[->]     (AtomController) --  (atom1);
+  \draw[->]     (atom1) |- node[text width=3cm]
+                                   {Add atom to environment}  (Environment);
+  \draw[->]     (Environment) -- node[text width=3cm]
+                                   {contain agents}(atoms);
+
+\end{tikzpicture}
+\end{frame}

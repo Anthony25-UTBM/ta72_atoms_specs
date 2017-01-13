@@ -15,6 +15,23 @@
 \usepackage{tikz}
 \usetikzlibrary{matrix}
 
+\usepackage{tikz}
+\usepackage{varwidth}
+\usetikzlibrary{decorations.text}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\usepackage{amsmath}
+\usetikzlibrary{arrows}
+
+
+
+
+% Redéfinis les marges des tableaux
+\let\oldtabular=\tabular
+\def\tabular{\small\oldtabular}
+\renewcommand{\arraystretch}{1.5}
+
 \colorlet{helpful}{lime!40}
 \colorlet{harmful}{red!30}
 \colorlet{internal}{yellow!20}
@@ -115,6 +132,10 @@
 %%%% Includes des sections :
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-\input{sections/introduction.tex}
+\input{chap0.tex}
+\input{chap1.tex}
+\input{chap2.tex}
+\input{chap3.tex}
+\input{chap4.tex}
 
 \end{document}
