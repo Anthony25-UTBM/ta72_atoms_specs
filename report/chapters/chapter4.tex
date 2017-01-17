@@ -94,13 +94,13 @@ Le main controlleur a pour mission le bon fonctionnement de GUI, il initialise l
 
 
 
-\begin{tikzpicture}[node distance=1.5cm,
+\begin{tikzpicture}[node distance=1.5cm,%
     every node/.style={fill=white, font=\sffamily}, align=center]
 
-  \node (start)             [Application]              {Application agent starts};
+  \node (start)             {Application agent starts};
   \node (masterController)     [process, below of=start]          {Controller (MASTER)};
-  \node (AtomController)      [process,below of=masterController, right of=ReactionController , xshift=-6cm]   {Atom Controller};
-  \node (MolecularController)      [process,below of=masterController, left of=ReactionController, xshift=6 cm]   {Molecule Controller};
+  \node (AtomController)      [process,left of=masterController, xshift=-4cm]   {Atom Controller};
+  \node (MolecularController)      [process,right of=masterController, xshift=4cm]   {Molecule Controller};
   \node (ReactionController)      [process, below of=masterController]   {Reaction Controller};
 
   \node (atom1)     [process, below of=AtomController]   {Atom ex: H};
@@ -121,8 +121,7 @@ Le main controlleur a pour mission le bon fonctionnement de GUI, il initialise l
                                    {Add atom to environment}  (Environment);
   \draw[->]     (Environment) -- node[text width=3cm]
                                    {contain agents}(atoms);
-
-  \end{tikzpicture}
+\end{tikzpicture}
 
 \section{Atom agent}
 \paragraph{}
@@ -131,7 +130,7 @@ Chaque atome dans notre application est considéré comme un agent. Il a un cycl
 \item Phase d'initialisation (setup) : dans laquelle, l'atome initialise ces propriétés (vitesse, symbole, rayon de van der waals ...)
 \item Phase de démarrage : dans la quelle il va rejoindre le conteneur d'agent est déclenché son comportement.
 \item Phase de vitalité : dans la quelle l'atome a son propre comportement selon un modèle chimico-physique à l'aide des différent algorithme a bordé dans la section simulation moléculaire.
-\item Phase de destruction : l'agent sera retiré du conteneur d'agent et détruit de la simulation. 
+\item Phase de destruction : l'agent sera retiré du conteneur d'agent et détruit de la simulation.
 \end{itemize}
 
 
